@@ -46,7 +46,7 @@ class App extends React.Component {
   // }
 
    fetchWeather = async() => {
-    if(this.state.location.length < 2) return;
+    if(this.state.location.length < 2) return this.setState({weather: {}}) ;
     try {
       this.setState({ isLoading: true });
       // 1) Getting location (geocoding)
@@ -87,6 +87,8 @@ class App extends React.Component {
     //this.fetchWeather();
     this.setState({location: localStorage.getItem('location') || ''});
   }
+
+  
   
   // like useEffect [location]
   componentDidUpdate(prevProps, prevState){
@@ -133,6 +135,9 @@ class Input extends React.Component{
 }
 
 class Weather extends React.Component {
+  componentWillUnmount() {
+    console.log("destroyed");
+  }
   render() {
     // console.log(this.props);
     const {
