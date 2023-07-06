@@ -34,17 +34,19 @@ function formatDay(dateStr) {
 
 class App extends React.Component {
   state = {
-    location: "lisbon",
+    location: "",
     isLoading: false,
     displayLocation: "",
     weather: {},
   };
+
   // constructor(props) {
   //   super(props);
   //   this.fetchWeather = this.fetchWeather.bind(this);
   // }
 
    fetchWeather = async() => {
+    if(this.state.location.length < 2) return;
     try {
       this.setState({ isLoading: true });
       // 1) Getting location (geocoding)
@@ -72,7 +74,7 @@ class App extends React.Component {
       //console.log(weatherData.daily);
       this.setState({ weather: weatherData.daily });
     } catch (err) {
-      console.err(err);
+      console.error(err);
     } finally {
       this.setState({ isLoading: false });
     }
@@ -80,12 +82,23 @@ class App extends React.Component {
 
   setLocation = (e) => this.setState({ location: e.target.value })
 
+  // like useEffect []
+  componentDidMount(){
+    //this.fetchWeather();
+  }
+  
+  // like useEffect [location]
+  componentDidUpdate(prevProps, prevState){
+    if(this.state.location !== prevState.location){
+      this.fetchWeather();
+    }
+  }
+
   render() {
     return (
       <div className="app">
         <h1>Classy Weater</h1>
         <Input location={this.state.location} onChangeLocation= {this.setLocation}/>
-        <button onClick={this.fetchWeather}>Get weather</button>
         {this.state.isLoading && <p className="loader">Loading...</p>}
 
         {this.state.weather.weathercode && (
